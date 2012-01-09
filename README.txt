@@ -86,3 +86,5 @@ When you are finished, re-run buildout. Offline, non-updating mode should
 suffice:
 
  $ bin/buildout -Nov
+
+Thats it!
