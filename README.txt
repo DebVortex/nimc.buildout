@@ -1,29 +1,17 @@
-=======================
-Using a custom buildout
-=======================
+========================
+installing this buildout
+========================
 
-Note: If you are using Windows, if you do not have PIL installed, or you are
-not using Python 2.4 as your main system Python, please see the relevant
-sections below.
-
-You probably got here by running something like:
-
- $ paster create -t plone3_buildout
-
-Now, you need to run:
+Just run the bootstrap.py and create every needed directory and file
+to run buildout:
 
  $ python bootstrap.py
 
-This will install zc.buildout for you.
-
-To create an instance immediately, run:
+Finally just insert:
 
  $ bin/buildout
 
-This will download Plone's eggs and products for you, as well as other
-dependencies, create a new Zope 2 installation (unless you specified
-an existing one when you ran "paster create"), and create a new Zope instance
-configured with these products.
+This will install all plone products and other dependencies, too.
 
 You can start your Zope instance by running:
 
@@ -36,30 +24,6 @@ or, to run in foreground mode:
 To run unit tests, you can use:
 
  $ bin/instance test -s my.package
-
-Installing PIL
---------------
-
-To use Plone, you need PIL, the Python Imaging Library. If you don't already
-have this, download and install it from http://www.pythonware.com/products/pil.
-
-Using a different Python installation
---------------------------------------
-
-Buildout will use your system Python installation by default. However, Zope
-2.10 (and by extension, Plone) will only work with Python 2.4. You can verify
-which version of Python you have, by running:
-
- $ python -V
-
-If that is not a 2.4 version, you need to install Python 2.4 from
-http://python.org. If you wish to keep another version as your main system
-Python, edit buildout.cfg and add an 'executable' option to the "[buildout]"
-section, pointing to a python interpreter binary:
-
- [buildout]
- ...
- executable = /path/to/python
 
 Working with buildout.cfg
 -------------------------
@@ -122,105 +86,6 @@ When you are finished, re-run buildout. Offline, non-updating mode should
 suffice:
 
  $ bin/buildout -Nov
-
-Developing old-style products
------------------------------
-
-If you are developing old-style Zope 2 products (not eggs) then you can do so
-by placing the product code in the top-level 'products' directory. This is
-analogous to the 'Products/' directory inside a normal Zope 2 instance and is
-scanned on start-up for new products.
-
-Depending on a new egg
-----------------------
-
-If you want to use a new egg that is in the Python Package Index, all you need
-to do is to add it to the "eggs" option under the main "[buildout]" section:
-
- [buildout]
- ...
- eggs =
-    my.package
-
-If it's listed somewhere else than the Python Package Index, you can add a link
-telling buildout where to find it in the 'find-links' option:
-
- [buildout]
- ...
- find-links =
-    http://dist.plone.org
-    http://download.zope.org/distribution/
-    http://effbot.org/downloads
-    http://some.host.com/packages
-
-Using existing old-style products
----------------------------------
-
-If you are using an old-style (non-egg) product, you can either add it as an
-automatically downloaded archive or put it in the top-level "products" folder.
-The former is probably better, because it means you can redistribute your
-buildout.cfg more easily:
-
- [productdistros]
- recipe = plone.recipe.distros
- urls =
-    http://plone.org/products/someproduct/releases/1.3/someproduct-1.3.tar.gz
-
-If someproduct-1.3.tar.gz extracts into several products inside a top-level
-directory, e.g. SomeProduct-1.3/PartOne and SomeProduct-1.3/PartTwo, then
-add it as a "nested package":
-
- [productdistros]
- recipe = plone.recipe.distros
- urls =
-    http://plone.org/products/someproduct/releases/1.3/someproduct-1.3.tar.gz
- nested-packages =
-    someproduct-1.3.tar.gz
-
-Alternatively, if it extracts to a directory which contains the version
-number, add it as a "version suffix package":
-
- [productdistros]
- recipe = plone.recipe.distros
- urls =
-    http://plone.org/products/someproduct/releases/1.3/someproduct-1.3.tar.gz
- version-suffix-packages =
-    someproduct-1.3.tar.gz
-
-You can also track products by adding a new bundle checkout part. It
-doesn't strictly have to be an svn bundle at all, any svn location will do,
-and cvs is also supported:
-
- [buildout]
- ...
- parts =
-    plone
-    zope2
-    productdistros
-    myproduct
-    instance
-    zopepy
-
-Note that "myproduct" comes before the "instance" part. You then
-need to add a new section to buildout.cfg:
-
- [myproduct]
- recipe = plone.recipe.bundlecheckout
- url = http://svn.plone.org/svn/collective/myproduct/trunk
-
-Finally, you need to tell Zope to find this new checkout and add it to its
-list of directories that are scanned for products:
-
- [instance]
- ...
- products =
-    ${buildout:directory}/products
-    ${productdistros:location}
-    ${plonebundle:location}
-    ${myproduct:location}
-
-Without this last step, the "myproduct" part is simply managing an svn
-checkout and could potentially be used for something else instead.
 
 =============
 Using Windows
